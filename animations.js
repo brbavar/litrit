@@ -8,6 +8,7 @@ const iconBars = [...menuIcon.children];
 const navbars = [menuBar, loginBar];
 const menuItems = [...menu.children];
 const menuLinks = document.querySelectorAll('#menu > div > a');
+const loginLinks = document.querySelectorAll('#login-bar > a');
 const fadeIn = (item) =>
   item.animate(
     [
@@ -55,7 +56,9 @@ const showMenu = () => {
 
     navbars.forEach((bar) => (bar.style.opacity = 1));
     menuItems.forEach((item) => (item.style.opacity = 1));
-    menuLinks.forEach((link) => (link.style.pointerEvents = 'auto'));
+    [...menuLinks, ...loginLinks].forEach(
+      (link) => (link.style.pointerEvents = 'auto')
+    );
 
     [menuIcon, iconBars[0], iconBars[2]].forEach((x) =>
       x.addEventListener('click', hideMenu)
@@ -84,7 +87,9 @@ const hideMenu = () => {
 
     menuBar.style.opacity = 0;
     [...menuItems, loginBar].forEach((x) => (x.style.opacity = 0));
-    menuLinks.forEach((link) => (link.style.pointerEvents = 'none'));
+    [...menuLinks, ...loginLinks].forEach(
+      (link) => (link.style.pointerEvents = 'none')
+    );
 
     menuIcon.addEventListener('click', showMenu);
   }, 50);
