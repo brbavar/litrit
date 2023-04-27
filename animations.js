@@ -35,6 +35,7 @@ const solidify = (bar) => bar.animate([{ opacity: 0 }, { opacity: 1 }], 250);
 
 const showMenu = () => {
   menuIcon.removeEventListener('click', showMenu);
+  console.log('top of showMenu: showMenu removed from menuIcon');
 
   counterClockwiseTurn = turn(iconBars[0], -1);
 
@@ -60,12 +61,18 @@ const showMenu = () => {
     [(menuIcon, iconBars[0], iconBars[2])].forEach((x) =>
       x.addEventListener('click', hideMenu)
     );
+    console.log(
+      'bottom of showMenu: hideMenu added to [menuIcon, iconBars[0], iconBars[2]]'
+    );
   }, 50);
 };
 
 const hideMenu = () => {
   [menuIcon, iconBars[0], iconBars[2]].forEach((x) =>
     x.removeEventListener('click', hideMenu)
+  );
+  console.log(
+    'top of hideMenu: hideMenu removed from [menuIcon, iconBars[0], iconBars[2]]'
   );
 
   [counterClockwiseTurn, fadeOut, clockwiseTurn].forEach((animation) =>
@@ -87,10 +94,20 @@ const hideMenu = () => {
     menuLinks.forEach((link) => (link.style.pointerEvents = 'none'));
 
     menuIcon.addEventListener('click', showMenu);
+    console.log('bottom of hideMenu: showMenu added to menuIcon');
   }, 50);
 };
 
-menuIcon.addEventListener(
-  'click',
-  window.getComputedStyle(iconBars[1]).opacity ? showMenu : hideMenu
-);
+if (window.getComputedStyle(iconBars[1]).opacity) {
+  menuIcon.addEventListener('click', showMenu);
+  console.log('in if: showMenu added to menuIcon');
+} else {
+  menuIcon.addEventListener('click', hideMenu);
+  menuIcon.removeEventListener('click', showMenu);
+  console.log(
+    'in else: hideMenu added to menuIcon, showMenu removed from menuIcon'
+  );
+}
+
+const showPattyOpacity = () =>
+  alert(window.getComputedStyle(iconBars[1]).opacity);
