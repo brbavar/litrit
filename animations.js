@@ -1,5 +1,5 @@
 const menuIcon = document.getElementById('menu-icon');
-const menuBar = document.getElementById('menu-bar');
+const menuBar = document.getElementById('overlay');
 const menuBarGradient = menuBar.style.backgroundImage;
 const menu = document.getElementById('menu');
 const loginBar = document.getElementById('login-bar');
@@ -7,6 +7,7 @@ const loginBar = document.getElementById('login-bar');
 const iconBars = [...menuIcon.children];
 const navbars = [menuBar, loginBar];
 const menuItems = [...menu.children];
+const menuLinks = document.querySelectorAll('#menu > div > a');
 const fadeIn = (item) =>
   item.animate(
     [
@@ -29,21 +30,11 @@ const turn = (bar, turnDirection) =>
     ],
     250
   );
-const initOpacity = new Map([
-  [menuBar, 0.8],
-  [loginBar, 0],
-]);
 
-const solidify = (bar) =>
-  bar.animate([{ opacity: initOpacity.get(bar) }, { opacity: 1 }], 250);
+const solidify = (bar) => bar.animate([{ opacity: 0 }, { opacity: 1 }], 250);
 
 const showMenu = () => {
   menuIcon.removeEventListener('click', showMenu);
-
-  menuBar.style.opacity = 0.65;
-  menuBar.style.backgroundImage = 'none';
-  menuBar.style.backgroundColor = 'rgba(139, 55, 55, 0.8)';
-  menuBar.style.borderBottom = '1px rgb(21, 21, 21) solid';
 
   counterClockwiseTurn = turn(iconBars[0], -1);
 
@@ -64,8 +55,9 @@ const showMenu = () => {
 
     navbars.forEach((bar) => (bar.style.opacity = 1));
     menuItems.forEach((item) => (item.style.opacity = 1));
+    menuLinks.forEach((link) => (link.style.pointerEvents = 'auto'));
 
-    [menuIcon, iconBars[0], iconBars[2]].forEach((x) =>
+    [(menuIcon, iconBars[0], iconBars[2])].forEach((x) =>
       x.addEventListener('click', hideMenu)
     );
   }, 50);
@@ -90,13 +82,15 @@ const hideMenu = () => {
   setTimeout(() => {
     [iconBars[0], iconBars[2]].forEach((bar) => (bar.style.transform = ''));
 
-    menuBar.style.backgroundImage = menuBarGradient;
-    menuBar.style.backgroundColor = '';
-    menuBar.style.borderBottom = '';
+    menuBar.style.opacity = 0;
     [...menuItems, loginBar].forEach((x) => (x.style.opacity = 0));
+    menuLinks.forEach((link) => (link.style.pointerEvents = 'none'));
 
     menuIcon.addEventListener('click', showMenu);
   }, 50);
 };
 
-menuIcon.addEventListener('click', showMenu);
+menuIcon.addEventListener(
+  'click',
+  window.getComputedStyle(iconBars[1]).opacity ? showMenu : hideMenu
+);

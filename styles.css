@@ -33,8 +33,10 @@ body * {
   bottom: 0;
   height: 100%;
   width: 100%;
-  background-color: black;
-  z-index: 3;
+  background-color: rgb(139, 55, 55);
+  border-bottom: 1px rgb(21, 21, 21) solid;
+  z-index: 0;
+  opacity: 0;
 }
 
 #menu-icon {
@@ -50,6 +52,7 @@ body * {
   width: 35px;
   height: 3px;
   background-color: white;
+  opacity: 1;
   margin: 9px 0;
 }
 
@@ -70,6 +73,7 @@ body * {
 
 #menu a {
   text-decoration: none;
+  pointer-events: none;
 }
 
 #login-bar {
