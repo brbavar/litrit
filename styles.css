@@ -114,41 +114,62 @@ button:hover {
   pointer-events: none;
 }
 
-/* LOGIN PAGE STYLES BELOW */
+/* STYLES FOR LOGIN & REGISTER PAGES BELOW */
 
-body#login {
+body#login,
+body#register {
   height: 100vh;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   background-image: linear-gradient(
-    to top right,
-    rgba(139, 55, 55, 0.65),
-    rgba(106, 18, 248, 0.65)
+    60deg,
+    rgba(139, 55, 55, 0.8),
+    rgba(248, 125, 18, 0.8)
   );
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
 }
 
-form,
-form > div.field {
-  display: flex;
-  flex-direction: column;
-}
-
 .card {
   background-color: white;
   box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.338);
   border-radius: 10px;
-  height: 400px;
-  width: fit-content;
-  padding: 20px;
+  height: 600px;
+  width: 350px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 35px;
+  padding-right: 43px;
+}
+
+form,
+form > div {
+  display: flex;
+  flex-direction: column;
 }
 
 form {
   gap: 3em;
   height: 150px;
-  width: 250px;
+  width: 350px;
+}
+
+.field > input,
+.name-section .field {
+  width: 100%;
+}
+
+.password-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.name-section {
+  display: flex;
+  flex-direction: row;
+  gap: 2em;
 }
