@@ -12,6 +12,28 @@ const hidableLinks = document.querySelectorAll(
   '#menu > div > a, #login-bar > a'
 );
 
+const toggleableClass = new Map([
+  [menu, 'hidden'],
+  [menuIcon, 'x-ified'],
+]);
+[...opacifiables, ...hidableLinks].forEach((elem) =>
+  toggleableClass.set(elem, opacifiables.includes(elem) ? 'opaque' : 'active')
+);
+
+const toggleClass = (state, elem) => {
+  if (elem.classList.contains(state)) elem.classList.remove(state);
+  else elem.classList.add(state);
+};
+
+const delayedStateChange = (opacity) => {
+  setTimeout(() => {
+    iconBars[1].style.opacity = opacity;
+  }, 200);
+  setTimeout(() => {
+    toggleableClass.forEach(toggleClass);
+  }, 50);
+};
+
 const opacify = (elem, riseLen) =>
   elem.animate(
     [
@@ -33,28 +55,6 @@ const turn = (bar, turnDirection) =>
     ],
     250
   );
-
-const toggleableClass = new Map([
-  [menu, 'hidden'],
-  [menuIcon, 'x-ified'],
-]);
-[...opacifiables, ...hidableLinks].forEach((elem) =>
-  toggleableClass.set(elem, opacifiables.includes(elem) ? 'opaque' : 'active')
-);
-
-const toggleClass = (state, elem, map) => {
-  if (elem.classList.contains(state)) elem.classList.remove(state);
-  else elem.classList.add(state);
-};
-
-const delayedStateChange = (opacity) => {
-  setTimeout(() => {
-    iconBars[1].style.opacity = opacity;
-  }, 200);
-  setTimeout(() => {
-    toggleableClass.forEach(toggleClass);
-  }, 50);
-};
 
 const animations = [];
 const toggleMenu = () => {
