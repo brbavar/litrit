@@ -9,16 +9,16 @@ const navbars = [menuBar, loginBar];
 const menuItems = [...menu.children];
 const menuLinks = document.querySelectorAll('#menu > div > a');
 const loginLinks = document.querySelectorAll('#login-bar > a');
-const fadeIn = (item) =>
-  item.animate(
+
+const opacify = (elem, riseLen) =>
+  elem.animate(
     [
-      { opacity: 0, transform: 'translateY(-5px)' },
+      { opacity: 0, transform: `translateY(${riseLen}px)` },
       { opacity: 1, transform: 'translateY(0)' },
     ],
     250
   );
 
-var counterClockwiseTurn, fadeOut, clockwiseTurn;
 const turn = (bar, turnDirection) =>
   bar.animate(
     [
@@ -32,72 +32,49 @@ const turn = (bar, turnDirection) =>
     250
   );
 
-const solidify = (bar) => bar.animate([{ opacity: 0 }, { opacity: 1 }], 250);
+const animations = [];
 
-const showMenu = () => {
-  menuIcon.removeEventListener('click', showMenu);
+const toggleableClass = new Map([
+  [menu, 'hidden'],
+  [menuIcon, 'x-ified'],
+]);
+[...navbars, ...menuItems].forEach((elem) =>
+  toggleableClass.set(elem, 'opaque')
+);
+[...menuLinks, ...loginLinks].forEach((elem) =>
+  toggleableClass.set(elem, 'active')
+);
 
-  counterClockwiseTurn = turn(iconBars[0], -1);
+const toggleClass = (state, elem, map) => {
+  if (elem.classList.contains(state)) elem.classList.remove(state);
+  else elem.classList.add(state);
+};
 
-  fadeOut = iconBars[1].animate([{ opacity: 1 }, { opacity: 0 }], 200);
-  navbars.forEach((bar) => solidify(bar));
-  menuItems.forEach((item) => {
-    fadeIn(item);
-  });
-
-  clockwiseTurn = turn(iconBars[2], 1);
-
+const delayedStateChange = (opacity) => {
   setTimeout(() => {
-    iconBars[1].style.opacity = 0;
+    iconBars[1].style.opacity = opacity;
   }, 200);
   setTimeout(() => {
-    iconBars[0].style.transform = 'rotate(-45deg) translateY(16.5px)';
-    iconBars[2].style.transform = 'rotate(45deg) translateY(-16.5px)';
-
-    navbars.forEach((bar) => (bar.style.opacity = 1));
-    menuItems.forEach((item) => (item.style.opacity = 1));
-    [...menuLinks, ...loginLinks].forEach(
-      (link) => (link.style.pointerEvents = 'auto')
-    );
-
-    [menuIcon, iconBars[0], iconBars[2]].forEach((x) =>
-      x.addEventListener('click', hideMenu)
-    );
+    toggleableClass.forEach(toggleClass);
   }, 50);
 };
 
-const hideMenu = () => {
-  [menuIcon, iconBars[0], iconBars[2]].forEach((x) =>
-    x.removeEventListener('click', hideMenu)
-  );
+const toggleMenu = () => {
+  const menuHidden = menu.classList.contains('hidden');
 
-  [counterClockwiseTurn, fadeOut, clockwiseTurn].forEach((animation) =>
-    animation.reverse()
-  );
-  navbars.forEach((bar) => solidify(bar).reverse());
-  menuItems.forEach((item) => {
-    fadeIn(item).reverse();
-  });
+  if (menuHidden) {
+    animations = [
+      turn(iconBars[0], -1),
+      iconBars[1].animate([{ opacity: 1 }, { opacity: 0 }], 200),
+      turn(iconBars[2], 1),
+    ];
+    for (elem of [...navbars, ...menuItems])
+      animations.push(opacify(elem, navbars.includes(obj) ? 0 : -5));
+  } else {
+    animations.forEach((animation) => animation.reverse());
+  }
 
-  setTimeout(() => {
-    iconBars[1].style.opacity = 1;
-  }, 200);
-  setTimeout(() => {
-    [iconBars[0], iconBars[2]].forEach((bar) => (bar.style.transform = ''));
-
-    menuBar.style.opacity = 0;
-    [...menuItems, loginBar].forEach((x) => (x.style.opacity = 0));
-    [...menuLinks, ...loginLinks].forEach(
-      (link) => (link.style.pointerEvents = 'none')
-    );
-
-    menuIcon.addEventListener('click', showMenu);
-  }, 50);
+  delayedStateChange(menuHidden ? 0 : 1);
 };
 
-// if (window.getComputedStyle(iconBars[1]).opacity)
-menuIcon.addEventListener('click', showMenu);
-// else {
-//   menuIcon.addEventListener('click', hideMenu);
-//   menuIcon.removeEventListener('click', showMenu);
-// }
+menuIcon.addEventListener('click', toggleMenu);
