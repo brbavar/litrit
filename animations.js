@@ -25,7 +25,7 @@ const toggleClass = (state, elem) => {
   else elem.classList.add(state);
 };
 
-const delayedStateChange = (opacity) => {
+const sleepThenRestyle = (opacity) => {
   setTimeout(() => {
     iconBars[1].style.opacity = opacity;
   }, 200);
@@ -70,7 +70,7 @@ const toggleMenu = () => {
       animations.push(opacify(elem, navbars.includes(elem) ? 0 : -5));
   }
 
-  delayedStateChange(menu.classList.contains('hidden') ? 0 : 1);
+  sleepThenRestyle(menu.classList.contains('hidden') ? 0 : 1);
 };
 
 menuIcon.addEventListener('click', toggleMenu);
