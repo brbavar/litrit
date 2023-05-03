@@ -7,8 +7,10 @@ const loginBar = document.getElementById('login-bar');
 const iconBars = [...menuIcon.children];
 const navbars = [menuBar, loginBar];
 const menuItems = [...menu.children];
-const menuLinks = document.querySelectorAll('#menu > div > a');
-const loginLinks = document.querySelectorAll('#login-bar > a');
+const opacifiables = [...navbars, ...menuItems];
+const hidableLinks = document.querySelectorAll(
+  '#menu > div > a, #login-bar > a'
+);
 
 const opacify = (elem, riseLen) =>
   elem.animate(
@@ -32,17 +34,12 @@ const turn = (bar, turnDirection) =>
     250
   );
 
-const animations = [];
-
 const toggleableClass = new Map([
   [menu, 'hidden'],
   [menuIcon, 'x-ified'],
 ]);
-[...navbars, ...menuItems].forEach((elem) =>
-  toggleableClass.set(elem, 'opaque')
-);
-[...menuLinks, ...loginLinks].forEach((elem) =>
-  toggleableClass.set(elem, 'active')
+[...opacifiables, ...hidableLinks].forEach((elem) =>
+  toggleableClass.set(elem, opacifiables.includes(elem) ? 'opaque' : 'active')
 );
 
 const toggleClass = (state, elem, map) => {
@@ -59,22 +56,21 @@ const delayedStateChange = (opacity) => {
   }, 50);
 };
 
+const animations = [];
 const toggleMenu = () => {
-  const menuHidden = menu.classList.contains('hidden');
-
-  if (menuHidden) {
-    animations = [
+  if (animations.length) {
+    animations.forEach((animation) => animation.reverse());
+  } else {
+    [
       turn(iconBars[0], -1),
       iconBars[1].animate([{ opacity: 1 }, { opacity: 0 }], 200),
       turn(iconBars[2], 1),
-    ];
-    for (elem of [...navbars, ...menuItems])
-      animations.push(opacify(elem, navbars.includes(obj) ? 0 : -5));
-  } else {
-    animations.forEach((animation) => animation.reverse());
+    ].forEach((animation) => animations.push(animation));
+    for (elem of opacifiables)
+      animations.push(opacify(elem, navbars.includes(elem) ? 0 : -5));
   }
 
-  delayedStateChange(menuHidden ? 0 : 1);
+  delayedStateChange(menu.classList.contains('hidden') ? 0 : 1);
 };
 
 menuIcon.addEventListener('click', toggleMenu);
