@@ -21,8 +21,9 @@ const toggleableClass = new Map([
 );
 
 const toggleClass = (state, elem) => {
-  if (elem.classList.contains(state)) elem.classList.remove(state);
-  else elem.classList.add(state);
+  const classes = elem.classList;
+  if (classes.contains(state)) classes.remove(state);
+  else classes.add(state);
 };
 
 const sleepThenRestyle = (opacity) => {
